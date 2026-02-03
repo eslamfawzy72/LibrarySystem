@@ -12,6 +12,7 @@ class BorrowResponse(BaseModel):
     id: int = Field(..., description="Borrow record ID")
     user_id: int = Field(..., description="ID of the user who borrowed the book")
     book_id: int = Field(..., description="ID of the borrowed book")
+    is_returned: bool = Field(..., description="Whether the book has been returned")
     start_date: datetime = Field(..., description="Borrow start date")
     return_date: datetime | None = Field(
         None,
