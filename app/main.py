@@ -7,6 +7,8 @@ from app.models import User, Book, Borrow
 
 app = FastAPI()
 
-@app.on_event("startup")
-def on_startup():
-    Base.metadata.create_all(bind=db.engine)
+# @app.on_event("startup")
+# def on_startup():
+#     Base.metadata.create_all(bind=db.engine)
+
+
