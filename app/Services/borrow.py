@@ -55,7 +55,7 @@ class BorrowService:
             user_id=user_id,
             book_id=book_id,
             start_date=start_date,
-            return_date=None,
+            return_date=return_date,
         )
 
         # Update availability
