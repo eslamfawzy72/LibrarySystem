@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.orm import relationship
-from datetime import datetime
+from datetime import datetime, timezone
 from app.core.base import Base
 
 class Book(Base):
@@ -10,5 +10,6 @@ class Book(Base):
     author = Column(String, index=True, nullable=False)
     total_copies = Column(Integer, nullable=False)
     available_copies = Column(Integer, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default= datetime.now(timezone.utc))
     borrows = relationship("Borrow", back_populates="book")
+    

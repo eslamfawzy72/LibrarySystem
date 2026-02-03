@@ -15,7 +15,7 @@ class BorrowResponse(BaseModel):
     start_date: datetime = Field(..., description="Borrow start date")
     return_date: datetime | None = Field(
         None,
-        description="Expected or actual return date (null if not returned yet)"
+        description="Return date (null if not returned yet)"
     )
 
     class Config:

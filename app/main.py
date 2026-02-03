@@ -1,14 +1,16 @@
 from fastapi import FastAPI
-from app.core.database import db
-from app.core.base import Base
 
-# IMPORTANT: import models so SQLAlchemy registers them
-from app.models import User, Book, Borrow
-
-app = FastAPI()
+from app.api.user import router as user_router
+from app.api.book import router as book_router
+from app.api.borrow import router as borrow_router
 
 # @app.on_event("startup")
 # def on_startup():
 #     Base.metadata.create_all(bind=db.engine)
 
+app = FastAPI(title="Library System API")
+
+app.include_router(user_router)
+app.include_router(book_router)
+app.include_router(borrow_router)
 
