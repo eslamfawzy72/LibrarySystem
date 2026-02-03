@@ -30,7 +30,7 @@ class BorrowRepository:
             .filter(
                 Borrow.user_id == user_id,
                 Borrow.book_id == book_id,
-                Borrow.return_date.is_(None),
+                Borrow.is_returned == False,  # noqa: E712
             )
             .first()
         )

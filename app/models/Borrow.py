@@ -11,6 +11,7 @@ class Borrow(Base):
     book_id = Column(Integer, ForeignKey("books.id"), nullable=False)
     start_date = Column(DateTime, nullable=False)
     return_date = Column(DateTime, nullable=True)
+    is_returned = Column(Boolean, default=False)  # New field to track return status
 
     user = relationship("User", back_populates="borrows")
     book = relationship("Book", back_populates="borrows")

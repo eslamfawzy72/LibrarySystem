@@ -55,7 +55,8 @@ class BorrowService:
             user_id=user_id,
             book_id=book_id,
             start_date=start_date,
-            return_date=None,
+            return_date=return_date,
+            is_returned=False
         )
 
         # Update availability
@@ -78,12 +79,13 @@ class BorrowService:
             raise ValueError("Borrow record not found")
 
         # Prevent double return
-        if borrow.return_date is not None:
+        if borrow.is_returned:
             raise ValueError("Book already returned")
 
         # Set return time
         now = datetime.now(timezone.utc)
         borrow.return_date = now
+        borrow.is_returned = True
 
         #  Update book availability
         book = borrow.book

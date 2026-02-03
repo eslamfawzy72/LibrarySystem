@@ -7,8 +7,6 @@ from app.services.book import BookService
 
 router = APIRouter(prefix="/books", tags=["Books"])
 
-book_service = BookService()
-
 
 @router.post(
     "",
@@ -19,6 +17,7 @@ def create_book(
     book: BookCreate,
     db: Session = Depends(get_db),
 ):
+    book_service = BookService()
     return book_service.create_book(
         db,
         title=book.title,
@@ -35,6 +34,7 @@ def get_book(
     book_id: int,
     db: Session = Depends(get_db),
 ):
+    book_service = BookService()
     book = book_service.get_book_by_id(db, book_id)
     if not book:
         raise HTTPException(status_code=404, detail="Book not found")
@@ -47,6 +47,7 @@ def get_book(
 def get_books(
     db: Session = Depends(get_db),
 ):
+    book_service = BookService()
     return book_service.get_books(db)
 @router.get(
     "/title/{title}",

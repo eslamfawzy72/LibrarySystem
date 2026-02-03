@@ -7,8 +7,6 @@ from app.services.user import UserService
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
-user_service = UserService()
-
 
 @router.post(
     "",
@@ -20,6 +18,7 @@ def create_user(
     db: Session = Depends(get_db),
 ):
     try:
+        user_service = UserService()
         return user_service.create_user(
             db,
             username=user.username,
@@ -37,6 +36,7 @@ def get_user(
     user_id: int,
     db: Session = Depends(get_db),
 ):
+    user_service = UserService()
     user = user_service.get_user_by_id(db, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -49,4 +49,5 @@ def get_user(
 def get_users(
     db: Session = Depends(get_db),
 ):
+    user_service = UserService()
     return user_service.get_users(db)
