@@ -1,0 +1,32 @@
+archi:
+layered archi
+API(Controllers)->service(logic)->repo(db acess)->orm Model(db)
+
+core:
+config,db
+
+Models: ORM
+user,book,borrow
+Schemas: DTO
+user,book,borrow
+
+Repo:(Data access layer)
+user_repo
+book_repo
+Borrow_repo
+
+Services (logic layer)
+user_ser
+book_ser
+borrow_ser
+
+api    (controller)
+router.py
+user.py
+ book.py
+borrow.py
+
+singleton in config
+
+one user have many borrows
+one book have one borrow
