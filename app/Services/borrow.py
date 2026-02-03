@@ -1,16 +1,4 @@
-from datetime import datetime, timedelta
-from sqlalchemy.orm import Session
-from app.models.borrow import Borrow
-from app.repositories.borrow import BorrowRepository
-from app.repositories.book import BookRepository
-
-
-class BorrowService:
-    def __init__(self):
-        self.borrow_repo = BorrowRepository()
-        self.book_repo = BookRepository()
-
-    from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from sqlalchemy.orm import Session
 from app.models.borrow import Borrow
 from app.repositories.borrow import BorrowRepository
@@ -33,7 +21,7 @@ class BorrowService:
         return_date: datetime,
     ) -> Borrow:
 
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         # Date validation
         if start_date >= return_date:
@@ -67,10 +55,10 @@ class BorrowService:
             user_id=user_id,
             book_id=book_id,
             start_date=start_date,
-            return_date=return_date,
+            return_date=None,
         )
 
-        # 6️⃣ Update availability
+        # Update availability
         book.available_copies -= 1
 
         self.borrow_repo.create(db, borrow)
@@ -78,8 +66,7 @@ class BorrowService:
 
         return borrow
 
-
-def return_book(
+    def return_book(
         self,
         db: Session,
         borrow_id: int,
@@ -94,8 +81,8 @@ def return_book(
         if borrow.return_date is not None:
             raise ValueError("Book already returned")
 
-        #  Set actual return time
-        now = datetime.utcnow()
+        # Set return time
+        now = datetime.now(timezone.utc)
         borrow.return_date = now
 
         #  Update book availability

@@ -16,3 +16,8 @@ class UserService:
             hashed_password=hashed_password,
         )
         return self.user_repo.create(db, user)
+    def get_user_by_id(self, db: Session, user_id: int) -> User | None:
+        return self.user_repo.get_by_id(db, user_id)
+    def get_users(self, db: Session) -> list[User]:
+        return db.query(User).all()
+    
