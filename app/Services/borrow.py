@@ -3,18 +3,21 @@ from sqlalchemy.orm import Session
 from app.models.borrow import Borrow
 from app.repositories.borrow import BorrowRepository
 from app.repositories.book import BookRepository
+from fastapi import Depends
 
 
-class BorrowService:
+class BorrowService:     
     MAX_BORROW_DAYS = 14  # business rule
+    def __init__ (self,borrow_repo: BorrowRepository, book_repo: BookRepository):
+        self.borrow_repo = borrow_repo
+        self.book_repo = book_repo
 
-    def __init__(self):
-        self.borrow_repo = BorrowRepository()
-        self.book_repo = BookRepository()
+    # def __init__(self):
+    #     self.borrow_repo = BorrowRepository()
+    #     self.book_repo = BookRepository()
 
     def borrow_book(
         self,
-        db: Session,
         user_id: int,
         book_id: int,
         start_date: datetime,
@@ -37,7 +40,7 @@ class BorrowService:
             )
 
         #  Check book exists
-        book = self.book_repo.get_by_id(db, book_id)
+        book = self.book_repo.get_by_id(book_id)
         if not book:
             raise ValueError("Book not found")
 
@@ -46,7 +49,7 @@ class BorrowService:
             raise ValueError("Book not available")
 
         #  Check if user already borrowed this book
-        active = self.borrow_repo.get_active_borrow(db, user_id, book_id)
+        active = self.borrow_repo.get_active_borrow(user_id, book_id)
         if active:
             raise ValueError("User already borrowed this book")
 
@@ -62,19 +65,18 @@ class BorrowService:
         # Update availability
         book.available_copies -= 1
 
-        self.borrow_repo.create(db, borrow)
-        self.book_repo.update(db, book)
+        self.borrow_repo.create(borrow)
+        self.book_repo.update(book)
 
         return borrow
 
     def return_book(
         self,
-        db: Session,
         borrow_id: int,
     ) -> Borrow:
 
         # Fetch borrow record
-        borrow = self.borrow_repo.get_by_id(db, borrow_id)
+        borrow = self.borrow_repo.get_by_id(borrow_id)
         if not borrow:
             raise ValueError("Borrow record not found")
 
@@ -92,7 +94,7 @@ class BorrowService:
         book.available_copies += 1
 
         #  Persist changes
-        self.borrow_repo.update(db, borrow)
-        self.book_repo.update(db, book)
+        self.borrow_repo.update(borrow)
+        self.book_repo.update(book)
 
         return borrow

@@ -8,7 +8,12 @@ from app.api.borrow import router as borrow_router
 # def on_startup():
 #     Base.metadata.create_all(bind=db.engine)
 
+
 app = FastAPI(title="Library System API")
+
+@app.get("/")
+def root():
+    return {"status": "LibrarySystem API is running!!"}
 
 app.include_router(user_router)
 app.include_router(book_router)
