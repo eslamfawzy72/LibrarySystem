@@ -104,7 +104,7 @@ curl -X POST http://127.0.0.1:8000/borrows \
   }'
 Setup and Run
 1. Clone the repository
-git clone <your-repo-url>
+git clone https://github.com/eslamfawzy72/LibrarySystem
 cd LibrarySystem
 2. Create a virtual environment
 python -m venv venv
