@@ -1,36 +1,40 @@
 from sqlalchemy.orm import Session
 from app.models.borrow import Borrow
+from fastapi import Depends
+from app.core.database import get_db
 
 
 class BorrowRepository:
+    def __init__(self, db: Session = Depends(get_db)):
+        self.db = db    
 
-    def get_by_id(self, db: Session, borrow_id: int) -> Borrow | None:
-        return db.query(Borrow).filter(Borrow.id == borrow_id).first()
+    def get_by_id(self, borrow_id: int) -> Borrow | None:
+        return self.db.query(Borrow).filter(Borrow.id == borrow_id).first()
 
-    def create(self, db: Session, borrow: Borrow) -> Borrow:
-        db.add(borrow)
-        db.commit()
-        db.refresh(borrow)
+    def create(self, borrow: Borrow) -> Borrow:
+        self.db.add(borrow)
+        self.db.commit()
+        self.db.refresh(borrow)
         return borrow
 
-    def delete(self, db: Session, borrow: Borrow) -> None:
-        db.delete(borrow)
-        db.commit()
+    def delete(self, borrow: Borrow) -> None:
+        self.db.delete(borrow)
+        self.db.commit()
 
-    def update(self, db: Session, borrow: Borrow) -> Borrow:
-        db.commit()
-        db.refresh(borrow)
+    def update(self, borrow: Borrow) -> Borrow:
+        self.db.commit()
+        self.db.refresh(borrow)
         return borrow
 
     def get_active_borrow(
-        self, db: Session, user_id: int, book_id: int
+        self, user_id: int, book_id: int
     ) -> Borrow | None:
         return (
-            db.query(Borrow)
+            self.db.query(Borrow)
             .filter(
                 Borrow.user_id == user_id,
                 Borrow.book_id == book_id,
-                Borrow.is_returned == False,  # noqa: E712
+                Borrow.is_returned == False,  
             )
             .first()
         )

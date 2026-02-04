@@ -3,6 +3,8 @@ from sqlalchemy.orm import sessionmaker, declarative_base, Session
 from typing import Generator
 from app.core.config import get_settings
 
+Base = declarative_base()
+
 
 class Database:
     def __init__(self) -> None:
@@ -20,7 +22,7 @@ class Database:
             bind=self.engine,
         )
 
-    def get_session(self) -> Generator[Session, None, None]:
+    def session(self) -> Generator[Session, None, None]:
         db = self.SessionLocal()
         try:
             yield db
@@ -28,5 +30,8 @@ class Database:
             db.close()
 
 
-db = Database()
-Base = declarative_base()
+_db = Database()  # private singleton
+
+
+def get_db() -> Generator[Session, None, None]:
+    yield from _db.session()

@@ -1,26 +1,31 @@
+from app.core.database import get_db
 from sqlalchemy.orm import Session
 from app.models.user import User
-
+from fastapi import Depends
 
 class UserRepository:
+    def __init__(self, db: Session = Depends(get_db)):
+        self.db = db
+        
+    def get_by_id(self, user_id: int) -> User | None:
+        return self.db.query(User).filter(User.id == user_id).first()
 
-    def get_by_id(self, db: Session, user_id: int) -> User | None:
-        return db.query(User).filter(User.id == user_id).first()
-
-    def get_by_email(self, db: Session, email: str) -> User | None:
-        return db.query(User).filter(User.email == email).first()
-
-    def create(self, db: Session, user: User) -> User:
-        db.add(user)
-        db.commit()
-        db.refresh(user)
+    def get_by_email(self, email: str) -> User | None:
+        return self.db.query(User).filter(User.email == email).first()
+    
+    def create(self, user: User) -> User:
+        self.db.add(user)
+        self.db.commit()
+        self.db.refresh(user)
         return user
 
-    def delete(self, db: Session, user: User) -> None:
-        db.delete(user)
-        db.commit()
+    def delete(self, user: User) -> None:
+        self.db.delete(user)
+        self.db.commit()
 
-    def update(self, db: Session, user: User) -> User:
-        db.commit()
-        db.refresh(user)
+    def update(self, user: User) -> User:
+        self.db.commit()
+        self.db.refresh(user)
         return user
+    def list_all(self) -> list[User]:
+        return self.db.query(User).all()

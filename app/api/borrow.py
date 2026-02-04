@@ -15,20 +15,16 @@ router = APIRouter(prefix="/borrows", tags=["Borrows"])
 )
 def borrow_book(
     borrow: BorrowCreate,
-    db: Session = Depends(get_db),
+    borrow_service: BorrowService = Depends(),
 ):
-    try:
-        borrow_service = BorrowService()
+  
         return borrow_service.borrow_book(
-            db,
             user_id=borrow.user_id,
             book_id=borrow.book_id,
             start_date=borrow.start_date,
             return_date=borrow.return_date,
         )
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
+ 
 
 @router.post(
     "/{borrow_id}/return",
@@ -36,10 +32,7 @@ def borrow_book(
 )
 def return_book(
     borrow_id: int,
-    db: Session = Depends(get_db),
+    borrow_service: BorrowService = Depends(),
 ):
-    try:
-        borrow_service = BorrowService()
-        return borrow_service.return_book(db, borrow_id)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        return borrow_service.return_book( borrow_id)
+  
