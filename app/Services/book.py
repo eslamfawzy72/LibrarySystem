@@ -5,7 +5,7 @@ from fastapi import Depends
 
 
 class BookService:
-    def __init__(self, book_repo: BookRepository=Depends()):
+    def __init__(self, book_repo: BookRepository):
         self.book_repo = book_repo
 
     def create_book(
@@ -23,7 +23,7 @@ class BookService:
         return self.book_repo.create(book)
     
     def get_book_by_id(self, book_id: int) -> Book | None:
-        return self.book_repo.get_by_id( book_id)
+        return self.book_repo.get_by_id(book_id)
     
     def get_books(self) -> list[Book]:
         return self.book_repo.list_all()

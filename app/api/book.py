@@ -1,3 +1,4 @@
+from app.api.deps import get_book_service
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
@@ -15,13 +16,14 @@ router = APIRouter(prefix="/books", tags=["Books"])
 )
 def create_book(
     book: BookCreate,
-    book_service: BookService = Depends(),
+    service: BookService = Depends(get_book_service),
 ):
-    return book_service.create_book(
+    return service.create_book(
         title=book.title,
         author=book.author,
         total_copies=book.total_copies,
     )
+
 
 @router.get(
     "/{book_id}",
@@ -30,22 +32,26 @@ def create_book(
 )
 def get_book(
     book_id: int,
-   book_service: BookService = Depends(),
+    service: BookService = Depends(get_book_service),
 ):
 
-    book = book_service.get_book_by_id(book_id)
+    book = service.get_book_by_id(book_id)
     if not book:
         raise HTTPException(status_code=404, detail="Book not found")
     return book
+
+
 @router.get(
     "",
     response_model=list[BookResponse],
     status_code=status.HTTP_200_OK,
 )
 def get_books(
-    book_service: BookService = Depends(),
+    service: BookService = Depends(get_book_service),
 ):
-    return book_service.get_books()
+    return service.get_books()
+
+
 @router.get(
     "/title/{title}",
     response_model=BookResponse,
@@ -53,9 +59,9 @@ def get_books(
 )
 def get_book_by_title(
     title: str,
-    book_service: BookService = Depends(),
+    service: BookService = Depends(get_book_service),
 ):
-    book = book_service.get_book_by_title(title)
+    book = service.get_book_by_title(title)
     if not book:
         raise HTTPException(status_code=404, detail="Book not found")
     return book

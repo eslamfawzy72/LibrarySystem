@@ -4,7 +4,7 @@ from app.models.user import User
 from fastapi import Depends
 
 class UserRepository:
-    def __init__(self, db: Session = Depends(get_db)):
+    def __init__(self, db: Session):
         self.db = db
         
     def get_by_id(self, user_id: int) -> User | None:

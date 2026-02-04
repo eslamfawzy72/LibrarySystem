@@ -8,7 +8,7 @@ from fastapi import Depends
 
 class BorrowService:     
     MAX_BORROW_DAYS = 14  # business rule
-    def __init__ (self,borrow_repo: BorrowRepository=Depends(), book_repo: BookRepository=Depends()):
+    def __init__ (self,borrow_repo: BorrowRepository, book_repo: BookRepository):
         self.borrow_repo = borrow_repo
         self.book_repo = book_repo
 

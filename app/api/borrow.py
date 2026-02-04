@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_db
+from app.api.deps import get_borrow_service, get_db
 from app.schemas.borrow import BorrowCreate, BorrowResponse
 from app.services.borrow import BorrowService
 
@@ -15,16 +15,16 @@ router = APIRouter(prefix="/borrows", tags=["Borrows"])
 )
 def borrow_book(
     borrow: BorrowCreate,
-    borrow_service: BorrowService = Depends(),
+    service: BorrowService = Depends(get_borrow_service),
 ):
-  
-        return borrow_service.borrow_book(
-            user_id=borrow.user_id,
-            book_id=borrow.book_id,
-            start_date=borrow.start_date,
-            return_date=borrow.return_date,
-        )
- 
+
+    return service.borrow_book(
+        user_id=borrow.user_id,
+        book_id=borrow.book_id,
+        start_date=borrow.start_date,
+        return_date=borrow.return_date,
+    )
+
 
 @router.post(
     "/{borrow_id}/return",
@@ -32,7 +32,6 @@ def borrow_book(
 )
 def return_book(
     borrow_id: int,
-    borrow_service: BorrowService = Depends(),
+    service: BorrowService = Depends(get_borrow_service),
 ):
-        return borrow_service.return_book( borrow_id)
-  
+    return service.return_book(borrow_id)

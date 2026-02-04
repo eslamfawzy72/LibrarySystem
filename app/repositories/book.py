@@ -5,8 +5,9 @@ from fastapi import Depends
 
 
 class BookRepository:
-    def __init__(self, db: Session = Depends(get_db)):
+    def __init__(self, db: Session):
         self.db = db
+        
     def get_by_id(self, book_id: int) -> Book | None:
         return self.db.query(Book).filter(Book.id == book_id).first()
 

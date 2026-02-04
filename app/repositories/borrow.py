@@ -5,8 +5,8 @@ from app.core.database import get_db
 
 
 class BorrowRepository:
-    def __init__(self, db: Session = Depends(get_db)):
-        self.db = db    
+    def __init__(self, db: Session):
+        self.db = db
 
     def get_by_id(self, borrow_id: int) -> Borrow | None:
         return self.db.query(Borrow).filter(Borrow.id == borrow_id).first()
@@ -26,15 +26,13 @@ class BorrowRepository:
         self.db.refresh(borrow)
         return borrow
 
-    def get_active_borrow(
-        self, user_id: int, book_id: int
-    ) -> Borrow | None:
+    def get_active_borrow(self, user_id: int, book_id: int) -> Borrow | None:
         return (
             self.db.query(Borrow)
             .filter(
                 Borrow.user_id == user_id,
                 Borrow.book_id == book_id,
-                Borrow.is_returned == False,  
+                Borrow.is_returned == False,
             )
             .first()
         )
