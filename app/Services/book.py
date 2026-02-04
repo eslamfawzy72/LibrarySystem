@@ -26,7 +26,7 @@ class BookService:
         return self.book_repo.get_by_id(book_id)
     
     def get_books(self) -> list[Book]:
-        return self.book_repo.list_all()
+        return self.book_repo.get_all()
     
     def get_book_by_title(self, title: str) -> Book | None:
         return self.book_repo.get_by_title(title)
