@@ -34,7 +34,6 @@ def get_book(
     book_id: int,
     service: BookService = Depends(get_book_service),
 ):
-
     book = service.get_book_by_id(book_id)
     if not book:
         raise HTTPException(status_code=404, detail="Book not found")
