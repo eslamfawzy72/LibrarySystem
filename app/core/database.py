@@ -5,33 +5,25 @@ from app.core.config import get_settings
 
 Base = declarative_base()
 
+def get_engine():
+    settings = get_settings()
+    return create_engine(
+        settings.DATABASE_URL,
+        echo=True,
+        future=True,
+    )
 
-class Database:
-    def __init__(self) -> None:
-        settings = get_settings()
+engine = get_engine()
 
-        self.engine = create_engine(
-            settings.DATABASE_URL,
-            echo=True,
-            future=True,
-        )
-
-        self.SessionLocal = sessionmaker(
-            autocommit=False,
-            autoflush=False,
-            bind=self.engine,
-        )
-
-    def session(self) -> Generator[Session, None, None]:
-        db = self.SessionLocal()
-        try:
-            yield db
-        finally:
-            db.close()
-
-
-_db = Database()  # private singleton
-
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine,
+)
 
 def get_db() -> Generator[Session, None, None]:
-    yield from _db.session()
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

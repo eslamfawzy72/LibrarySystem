@@ -1,6 +1,8 @@
-from app.core.database import _db, get_db
+from app.client.LLM_clients.Cohere_LLM_client import CohereLLMClient
+from app.core.database import get_db
 from app.repositories.book import BookRepository
 from app.repositories.borrow import BorrowRepository
+from app.services.LLM.Cohere_service import CohereLLMService
 from app.services.book import BookService
 from app.services.borrow import BorrowService
 from app.services.user import UserService
@@ -48,3 +50,11 @@ def get_user_service(
     user_repo: "UserRepository" = Depends(get_user_repo),
 ) -> "UserService":
     return UserService(user_repo=user_repo)
+
+def get_llm_client() -> CohereLLMClient:
+    return CohereLLMClient()
+
+def get_llm_service(
+    llm_client: CohereLLMClient = Depends(get_llm_client),
+) -> CohereLLMService:
+    return CohereLLMService(llm_client)
